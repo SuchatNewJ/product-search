@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ค้นหาสินค้า - EZ Store</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.95;
+            margin-top: 5px;
+        }
+
+        .header .tips {
+            font-size: 12px;
+            opacity: 0.85;
+            margin-top: 8px;
+            background: rgba(255,255,255,0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .setup-box {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+
+        .setup-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #667eea;
+            text-align: center;
+        }
+
+        .instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .instructions h4 {
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .instructions code {
+            background: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #d63384;
+            font-size: 13px;
+        }
+
+        .instructions pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 12px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 12px;
+            margin: 10px 0;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 35px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .search-box.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 18px 50px 18px 20px;
+            font-size: 18px;
+            border: 3px solid #667eea;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        #searchInput:focus {
+            border-color: #764ba2;
+            box-shadow: 0 0 0 4px rgba(118, 75, 162, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+            font-size: 24px;
+            pointer-events: none;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 35px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 160px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+
+        .refresh-btn {
+            background: #28a745;
+            padding: 12px 25px;
+            font-size: 15px;
+            width: auto;
+            display: inline-block;
+        }
+
+        .refresh-btn:hover {
+            background: #218838;
+        }
+
+        .results {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            padding: 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            border-color: #667eea;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 60px;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-image.no-image {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-body {
+            padding: 20px;
+        }
+
+        .product-header {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .product-id {
+            font-size: 12px;
+            color: #999;
+            font-family: monospace;
+            background: #f5f5f5;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .product-info {
+            display: grid;
+            gap: 10px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .info-label {
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-weight: bold;
+            color: #333;
+            font-size: 15px;
+        }
+
+        .price {
+            color: #e74c3c;
+            font-size: 24px;
+            font-weight: 900;
+        }
+
+        .brand-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .category-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .quantity-badge {
+            color: #28a745;
+            font-weight: bold;
+            background: #d4edda;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .status-message {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 2px solid #bee5eb;
+        }
+
+        .no-results {
+            text-align: center;
+            color: white;
+            font-size: 20px;
+            padding: 60px 20px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .no-results-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .results {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                flex-direction: column;
+            }
+
+            .stat-card {
+                width: 100%;
+            }
+
+            .product-card {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.6em;
+            }
+
+            .setup-box, .search-box {
+                padding: 20px;
+            }
+
+            #searchInput {
+                font-size: 16px;
+                padding: 15px 45px 15px 15px;
+            }
+
+            .product-name {
+                font-size: 16px;
+            }
+
+            .price {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 ระบบค้นหาสินค้า</h1>
+            <p>ค้นหาสินค้าอย่างรวดเร็วและแม่นยำ</p>
+            <div class="tips">
+                💡 ค้นหาด้วยหลายคำได้ เช่น "ABB C32" หรือ "schneider 25A"
+            </div>
+        </div>
+
+        <!-- Setup Box -->
+        <div class="setup-box" id="setupBox">
+            <div class="setup-title">⚙️ ตั้งค่าการเชื่อมต่อครั้งแรก</div>
+            
+            <div class="instructions">
+                <h4>📋 วิธีเชื่อมต่อ Google Sheets:</h4>
+                <ol>
+                    <li>เปิด Google Sheets ที่มีข้อมูลสินค้า</li>
+                    <li>คลิก <strong>ส่วนขยาย → Apps Script</strong></li>
+                    <li>ลบโค้ดเดิมออก แล้ววางโค้ดนี้:
+<pre>function doGet(e) {
+  var sheet = SpreadsheetApp
+    .getActiveSpreadsheet()
+    .getActiveSheet();
+  var data = sheet.getDataRange().getValues();
+  var json = JSON.stringify(data);
+
+  // รองรับ JSONP (แก้ปัญหา CORS เมื่อเปิดจาก file://)
+  var callback = e && e.parameter && e.parameter.callback;
+  if (callback) {
+    return ContentService
+      .createTextOutput(callback + '(' + json + ')')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+
+  return ContentService
+    .createTextOutput(json)
+    .setMimeType(ContentService.MimeType.JSON);
+}</pre>
+                    </li>
+                    <li>คลิก <strong>ทำให้ใช้งานได้ → การทำให้ใช้งานได้ใหม่</strong></li>
+                    <li>เลือก <strong>เว็บแอป</strong></li>
+                    <li>ผู้ที่มีสิทธิ์เข้าถึง: เลือก <strong>"ทุกคน"</strong></li>
+                    <li>คลิก <strong>ทำให้ใช้งานได้</strong></li>
+                    <li>คัดลอก <strong>URL ของเว็บแอป</strong></li>
+                    <li>วาง URL ในช่องด้านล่าง</li>
+                </ol>
+            </div>
+
+            <div class="input-group">
+                <label>🔗 URL ของ Google Apps Script:</label>
+                <input 
+                    type="text" 
+                    id="sheetUrl" 
+                    placeholder="https://script.google.com/macros/s/xxxxx/exec"
+                >
+            </div>
+
+            <button class="btn" onclick="loadFromGoogleSheets()">
+                🚀 เชื่อมต่อและเริ่มใช้งาน
+            </button>
+
+            <div id="statusMessage"></div>
+        </div>
+
+        <!-- Search Box -->
+        <div class="search-box" id="searchBox">
+            <div class="search-input-wrapper">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="🔎 ค้นหาสินค้า เช่น ABB C32, schneider contactor, ไฟ LED..."
+                    autocomplete="off"
+                >
+                <span class="search-icon">🔍</span>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="number" id="foundProducts">0</div>
+                    <div class="label">ผลการค้นหา</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="totalProducts">0</div>
+                    <div class="label">สินค้าทั้งหมด</div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn refresh-btn" onclick="refreshData()">
+                    🔄 รีเฟรชข้อมูล
+                </button>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="results"></div>
+    </div>
+
+    <script>
+        let products = [];
+
+        // JSONP — ดึงข้อมูลโดยไม่มีปัญหา CORS แม้เปิดจาก file://
+        function fetchWithJSONP(url) {
+            return new Promise((resolve, reject) => {
+                const cbName = 'cb_' + Date.now();
+                const script = document.createElement('script');
+                const timer = setTimeout(() => {
+                    cleanup();
+                    reject(new Error('JSONP timeout'));
+                }, 10000);
+
+                function cleanup() {
+                    clearTimeout(timer);
+                    delete window[cbName];
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                }
+
+                window[cbName] = function(data) {
+                    cleanup();
+                    resolve(JSON.stringify(data));
+                };
+
+                // Apps Script รองรับ ?callback= สำหรับ JSONP
+                script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cbName;
+                script.onerror = () => { cleanup(); reject(new Error('JSONP script error')); };
+                document.head.appendChild(script);
+            });
+        }
+
+        async function loadFromGoogleSheets() {
+            const url = document.getElementById('sheetUrl').value.trim();
+            
+            if (!url) {
+                showStatus('กรุณาใส่ URL ของ Google Apps Script', 'error');
+                return;
+            }
+
+            // ตรวจสอบรูปแบบ URL ก่อน
+            const urlCheck = checkUrlFormat(url);
+            if (!urlCheck.valid) {
+                showStatus(urlCheck.message, 'error');
+                showDiagnostic(urlCheck.detail);
+                return;
+            }
+
+            showStatus('⏳ กำลังเชื่อมต่อ...', 'info');
+            document.getElementById('results').innerHTML = '<div class="loading"><div class="spinner"></div><div>กำลังโหลดข้อมูล...</div></div>';
+
+            try {
+                let responseText = null;
+
+                // วิธีที่ 1: JSONP — ทำงานได้แม้เปิดจาก file://
+                try {
+                    responseText = await fetchWithJSONP(url);
+                } catch(e1) { console.log('JSONP failed:', e1); }
+
+                // วิธีที่ 2: fetch ตรง
+                if (!responseText) {
+                    try {
+                        const r = await fetch(url);
+                        if (r.ok) responseText = await r.text();
+                    } catch(e2) { console.log('Direct fetch failed:', e2); }
+                }
+
+                // วิธีที่ 3: CORS Proxy สำรอง
+                if (!responseText) {
+                    for (const proxy of ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=']) {
+                        try {
+                            const r = await fetch(proxy + encodeURIComponent(url));
+                            if (r.ok) { responseText = await r.text(); break; }
+                        } catch(e3) {}
+                    }
+                }
+
+                if (!responseText) throw new Error('เชื่อมต่อไม่ได้');
+
+                // ตรวจสอบข้อมูลที่ได้รับก่อน parse
+                const dataCheck = checkResponseData(responseText);
+                if (!dataCheck.valid) {
+                    showStatus(dataCheck.message, 'error');
+                    showDiagnostic(dataCheck.detail);
+                    document.getElementById('results').innerHTML = '';
+                    return;
+                }
+
+                parseData(responseText);
+                localStorage.setItem('sheetUrl', url);
+                document.getElementById('setupBox').style.display = 'none';
+                document.getElementById('searchBox').classList.add('active');
+
+                if (products.length > 0) {
+                    showStatus(`✅ โหลดสำเร็จ! พบสินค้า ${products.length} รายการ`, 'success');
+                    hideDiagnostic();
+                    setTimeout(() => { document.getElementById('statusMessage').innerHTML = ''; }, 3000);
+                } else {
+                    showStatus('⚠️ เชื่อมต่อสำเร็จ แต่พบสินค้า 0 รายการ', 'error');
+                    const headers = dataCheck.headers || [];
+                    showDiagnostic({
+                        title: '🔍 ผลการตรวจสอบ:',
+                        items: [
+                            `✅ เชื่อมต่อ URL สำเร็จ`,
+                            `✅ ได้รับข้อมูลจาก Google Sheets แล้ว`,
+                            `❌ ไม่พบสินค้า — ชื่อคอลัมน์อาจไม่ตรง`,
+                            ``,
+                            `📋 หัวคอลัมน์ที่พบใน Sheets: ${headers.length > 0 ? headers.join(' | ') : '(ไม่พบ)'}`,
+                            ``,
+                            `⚠️ ระบบต้องการคอลัมน์ชื่อ:`,
+                            `   • ProductID (รหัสสินค้า)`,
+                            `   • ProductName (ชื่อสินค้า)`,
+                            ``,
+                            `💡 วิธีแก้: เช็คชื่อคอลัมน์แถวแรกใน Google Sheets`
+                        ]
+                    });
+                }
+                
+            } catch (error) {
+                showStatus('❌ เชื่อมต่อไม่ได้', 'error');
+                showDiagnostic({
+                    title: '🔍 ผลการตรวจสอบ:',
+                    items: [
+                        `❌ ไม่สามารถเชื่อมต่อ URL ได้`,
+                        ``,
+                        `💡 วิธีแก้ไข:`,
+                        `   1. ตรวจสอบว่า URL ขึ้นต้นด้วย https://script.google.com/`,
+                        `   2. ตรวจสอบว่า Deploy แล้ว และเลือก "ทุกคน" มีสิทธิ์เข้าถึง`,
+                        `   3. ลอง Deploy ใหม่อีกครั้งใน Apps Script`
+                    ]
+                });
+                document.getElementById('results').innerHTML = '';
+            }
+        }
+
+        // ตรวจสอบรูปแบบ URL
+        function checkUrlFormat(url) {
+            if (url.includes('script.google.com/macros/s/') && url.endsWith('/exec')) {
+                return { valid: true };
+            }
+            if (url.includes('docs.google.com/spreadsheets')) {
+                return {
+                    valid: false,
+                    message: '❌ URL นี้เป็นของ Google Sheets ไม่ใช่ Apps Script',
+                    detail: {
+                        title: '🔍 พบปัญหา: ใส่ URL ผิดประเภท',
+                        items: [
+                            '❌ URL ที่ใส่เป็นของ Google Sheets ใช้ไม่ได้',
+                            '✅ ต้องใช้ URL จาก Apps Script เท่านั้น',
+                            '',
+                            '📋 วิธีหา URL ที่ถูกต้อง:',
+                            '   1. เปิด Google Sheets ของคุณ',
+                            '   2. คลิก "ส่วนขยาย" → "Apps Script"',
+                            '   3. วางโค้ด doGet() → Save',
+                            '   4. "ทำให้ใช้งานได้" → "เว็บแอป" → "ทุกคน"',
+                            '   5. คัดลอก URL ที่ได้',
+                            '',
+                            '✅ URL ที่ถูกต้องมีรูปแบบ:',
+                            '   https://script.google.com/macros/s/xxxxx/exec'
+                        ]
+                    }
+                };
+            }
+            if (!url.startsWith('https://script.google.com')) {
+                return {
+                    valid: false,
+                    message: '❌ URL ไม่ถูกต้อง',
+                    detail: {
+                        title: '🔍 พบปัญหา: รูปแบบ URL ผิด',
+                        items: [
+                            `❌ URL ที่ใส่: ${url.substring(0, 60)}`,
+                            '',
+                            '✅ URL ที่ถูกต้องต้องมีรูปแบบ:',
+                            '   https://script.google.com/macros/s/xxxxx/exec',
+                            '',
+                            '💡 URL ต้องได้มาจาก Apps Script → Deploy เท่านั้น'
+                        ]
+                    }
+                };
+            }
+            return { valid: true };
+        }
+
+        // ตรวจสอบข้อมูลที่ได้รับ
+        function checkResponseData(text) {
+            if (text.trim().startsWith('<')) {
+                return {
+                    valid: false,
+                    message: '❌ Script ยังไม่ได้รับอนุญาต — ต้องตั้งสิทธิ์ใหม่',
+                    headers: [],
+                    detail: {
+                        title: '🔍 พบปัญหา: Script ไม่ได้รับอนุญาต',
+                        items: [
+                            '❌ Script ส่ง Error Page กลับมา',
+                            '   → เกิดจากสิทธิ์การเข้าถึงไม่ถูกต้อง',
+                            '',
+                            '💡 วิธีแก้ไข — Deploy ใหม่:',
+                            '   1. เปิด Apps Script',
+                            '   2. "ทำให้ใช้งานได้" → "จัดการการทำให้ใช้งานได้"',
+                            '   3. คลิกไอคอน ✏️ แก้ไข',
+                            '   4. "ผู้ที่มีสิทธิ์เข้าถึง" → เปลี่ยนเป็น "ทุกคน"',
+                            '   5. บันทึก → คัดลอก URL ใหม่มาใส่'
+                        ]
+                    }
+                };
+            }
+            try {
+                const json = JSON.parse(text);
+                if (Array.isArray(json) && json.length > 0) {
+                    return { valid: true, headers: json[0] };
+                }
+                if (Array.isArray(json) && json.length === 0) {
+                    return {
+                        valid: false,
+                        message: '❌ Google Sheets ไม่มีข้อมูล',
+                        headers: [],
+                        detail: {
+                            title: '🔍 พบปัญหา: Sheet ว่างเปล่า',
+                            items: [
+                                '❌ ได้รับข้อมูลเปล่ามาจาก Google Sheets',
+                                '💡 ตรวจสอบว่า Sheet ที่ Deploy มีข้อมูลสินค้าอยู่',
+                                '   → Apps Script ใช้ getActiveSheet() = ชีทแรกเสมอ'
+                            ]
+                        }
+                    };
+                }
+            } catch (e) { /* ไม่ใช่ JSON ให้ parse CSV ต่อ */ }
+            return { valid: true, headers: [] };
+        }
+
+        // แสดง / ซ่อน กล่อง Diagnostic
+        function showDiagnostic(detail) {
+            let box = document.getElementById('diagnosticBox');
+            if (!box) {
+                box = document.createElement('div');
+                box.id = 'diagnosticBox';
+                box.style.cssText = `background:#fff8e1;border:2px solid #ffc107;border-radius:12px;
+                    padding:20px;margin-top:15px;font-size:14px;line-height:2;`;
+                document.getElementById('statusMessage').insertAdjacentElement('afterend', box);
+            }
+            box.innerHTML = `<strong style="color:#856404;font-size:15px;">${detail.title}</strong><br><br>` +
+                detail.items.map(item => item === '' ? '<br>' : `<span style="font-family:monospace;">${item}</span><br>`).join('');
+        }
+
+        function hideDiagnostic() {
+            const box = document.getElementById('diagnosticBox');
+            if (box) box.remove();
+        }
+
+        function refreshData() {
+            const url = localStorage.getItem('sheetUrl');
+            if (url) {
+                document.getElementById('sheetUrl').value = url;
+                loadFromGoogleSheets();
+            }
+        }
+
+        function parseData(text) {
+            try {
+                const jsonData = JSON.parse(text);
+                if (Array.isArray(jsonData)) {
+                    parseJSONData(jsonData);
+                    return;
+                }
+            } catch (e) {
+                parseCSVData(text);
+            }
+        }
+
+        function parseCSVData(csvText) {
+            const lines = csvText.split('\n').filter(line => line.trim());
+            if (lines.length === 0) {
+                showStatus('❌ ไม่พบข้อมูลในไฟล์', 'error');
+                return;
+            }
+
+            const headers = parseCSVLine(lines[0]);
+            const indices = findColumnIndices(headers);
+
+            products = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                const values = parseCSVLine(lines[i]);
+                if (values.length <= 1) continue;
+                
+                const product = {
+                    id: (values[indices.id] || '').toString().trim(),
+                    name: (values[indices.name] || '').toString().trim(),
+                    brand: (values[indices.brand] || '-').toString().trim(),
+                    category: (values[indices.category] || '-').toString().trim(),
+                    price: parseFloat((values[indices.price] || '0').toString().replace(/,/g, '')) || 0,
+                    quantity: parseInt((values[indices.quantity] || '0').toString().replace(/,/g, '')) || 0,
+                    imageUrl: (values[indices.imageUrl] || '').toString().trim()
+                };
+                
+                if (product.id && product.name) {
+                    products.push(product);
+                }
+            }
+
+            document.getElementById('totalProducts').textContent = products.length;
+            displayProducts(products);
+            
+            if (products.length === 0) {
+                showStatus('⚠️ โหลดข้อมูลได้แต่ไม่พบสินค้า - กรุณาตรวจสอบชื่อคอลัมน์ใน Google Sheets', 'error');
+            }
+        }
+
+        function parseJSONData(jsonData) {
+            if (jsonData.length === 0) {
+                showStatus('❌ ไม่พบข้อมูลในไฟล์', 'error');
+                return;
+            }
+            
+            const headers = jsonData[0];
+            const indices = findColumnIndices(headers);
+
+            products = [];
+            
+            for (let i = 1; i < jsonData.length; i++) {
+                const row = jsonData[i];
+                if (!row || row.length === 0) continue;
+                
+                const product = {
+                    id: (row[indices.id] || '').toString().trim(),
+                    name: (row[indices.name] || '').toString().trim(),
+                    brand: (row[indices.brand] || '-').toString().trim(),
+                    category: (row[indices.category] || '-').toString().trim(),
+                    price: parseFloat(row[indices.price]) || 0,
+                    quantity: parseInt(row[indices.quantity]) || 0,
+                    imageUrl: (row[indices.imageUrl] || '').toString().trim()
+                };
+                
+                if (product.id && product.name) {
+                    products.push(product);
+                }
+            }
+
+            document.getElementById('totalProducts').textContent = products.length;
+            displayProducts(products);
+            
+            if (products.length === 0) {
+                showStatus('⚠️ โหลดข้อมูลได้แต่ไม่พบสินค้า - กรุณาตรวจสอบชื่อคอลัมน์ใน Google Sheets', 'error');
+            }
+        }
+
+        function findColumnIndices(headers) {
+            const headerLower = headers.map(h => h.toString().toLowerCase());
+            
+            return {
+                id: headerLower.findIndex(h => 
+                    h.includes('productid') || h === 'id' || h.includes('รหัส') || h.includes('รหัสสินค้า')
+                ),
+                name: headerLower.findIndex(h => 
+                    h.includes('productname') || h.includes('name') || h.includes('ชื่อ') || h.includes('สินค้า')
+                ),
+                brand: headerLower.findIndex(h => 
+                    h.includes('brand') || h.includes('ยี่ห้อ') || h.includes('แบรนด์')
+                ),
+                category: headerLower.findIndex(h => 
+                    h.includes('category') || h.includes('หมวดหมู่') || h.includes('ประเภท')
+                ),
+                price: headerLower.findIndex(h => 
+                    h.includes('sellprice') || h.includes('ราคาขาย') || h.includes('installedsellprice') || (h.includes('price') && !h.includes('cost')) || h.includes('ราคา')
+                ),
+                quantity: headerLower.findIndex(h => 
+                    h.includes('quantity') || h.includes('จำนวน') || h.includes('คงเหลือ') || h.includes('stock')
+                ),
+                imageUrl: headerLower.findIndex(h => 
+                    h.includes('imageurl') || h.includes('image') || h.includes('รูปภาพ') || h.includes('img')
+                )
+            };
+        }
+
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim().replace(/^"|"$/g, ''));
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current.trim().replace(/^"|"$/g, ''));
+            
+            return result;
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+        }
+
+        function searchProducts(query) {
+            if (!query.trim()) {
+                displayProducts(products);
+                return;
+            }
+
+            const searchTerms = query.toLowerCase()
+                .split(/\s+/)
+                .filter(term => term.length > 0);
+
+            const filtered = products.filter(product => {
+                const searchableText = [
+                    product.id,
+                    product.name,
+                    product.brand,
+                    product.category
+                ].join(' ').toLowerCase();
+
+                return searchTerms.every(term => searchableText.includes(term));
+            });
+
+            displayProducts(filtered);
+        }
+
+        function displayProducts(productList) {
+            const resultsDiv = document.getElementById('results');
+            const foundCount = document.getElementById('foundProducts');
+            
+            foundCount.textContent = productList.length;
+
+            if (productList.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon">😔</div>
+                        <div>ไม่พบสินค้าที่ค้นหา</div>
+                        <div style="font-size: 14px; margin-top: 10px; opacity: 0.8;">ลองใช้คำค้นหาอื่นดูนะคะ</div>
+                    </div>
+                `;
+                return;
+            }
+
+            resultsDiv.innerHTML = productList.map(product => `
+                <div class="product-card">
+                    ${product.imageUrl ? `
+                        <div class="product-image">
+                            <img src="${product.imageUrl}" alt="${product.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\'padding:60px;font-size:48px;\\'>📦</div>'">
+                        </div>
+                    ` : `
+                        <div class="product-image no-image">
+                            <div style="font-size: 48px;">📦</div>
+                        </div>
+                    `}
+                    <div class="product-body">
+                        <div class="product-header">
+                            <div class="product-name">${product.name}</div>
+                            <span class="product-id">รหัส: ${product.id}</span>
+                        </div>
+                        <div class="product-info">
+                            ${product.brand !== '-' ? `
+                            <div class="info-row">
+                                <span class="info-label">ยี่ห้อ</span>
+                                <span class="brand-badge">${product.brand}</span>
+                            </div>
+                            ` : ''}
+                            ${product.category !== '-' ? `
+                            <div class="info-row">
+                                <span class="info-label">หมวดหมู่</span>
+                                <span class="category-badge">${product.category}</span>
+                            </div>
+                            ` : ''}
+                            ${product.quantity > 0 ? `
+                            <div class="info-row">
+                                <span class="info-label">คงเหลือ</span>
+                                <span class="quantity-badge">${product.quantity.toLocaleString('th-TH')} ชิ้น</span>
+                            </div>
+                            ` : ''}
+                            <div class="info-row">
+                                <span class="info-label">ราคาขาย</span>
+                                <span class="info-value price">${product.price > 0 ? product.price.toLocaleString('th-TH', {minimumFractionDigits: 0, maximumFractionDigits: 2}) + ' ฿' : 'ติดต่อสอบถาม'}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchProducts(e.target.value);
+        });
+
+        window.addEventListener('load', () => {
+            const savedUrl = localStorage.getItem('sheetUrl');
+            if (savedUrl) {
+                document.getElementById('sheetUrl').value = savedUrl;
+                document.getElementById('setupBox').style.display = 'none';
+                document.getElementById('searchBox').classList.add('active');
+                loadFromGoogleSheets();
+            }
+        });
+    </script>
+</body>
+</html>
